@@ -6,4 +6,4 @@ const noteSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model("notes", noteSchema);
+module.exports = mongoose.model("note", noteSchema);

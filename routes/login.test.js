@@ -1,4 +1,4 @@
-  
+
 const request = require("supertest");
 
 const server = require("../server");
@@ -43,7 +43,7 @@ describe("/login", () => {
       });
     });
   });
-  
+
   describe("signup ", () => {
     describe("POST /signup", () => {
       it("should return 400 without a password", async () => {
@@ -172,7 +172,7 @@ describe("/login", () => {
         });
         expect(loginRes1.statusCode).toEqual(200);
       });
-     
+
     });
     describe("POST /logout", () => {
       it("should reject bogus token", async () => {
