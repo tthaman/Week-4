@@ -2,7 +2,6 @@ const Token = require('../models/token');
 
 //should be an async function that returns a string after creating a Token record
 module.exports.create = async (tokenData) => {
-  tokenData.userId = mongoose.Types.ObjectId(tokenData.userId)
   return await Token.create( tokenData)
 };
 

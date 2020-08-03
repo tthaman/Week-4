@@ -7,6 +7,8 @@ module.exports = {};
 
 // updateUserPassword(userId, password) - should update the user's password field
 module.exports.updateUserPassword = async (userId, password) =>  {
+  password = bcrypt.hashSync(password, salt);
+
   return await User.updateOne(
     { _id: mongoose.Types.ObjectId(userId) },
     {
