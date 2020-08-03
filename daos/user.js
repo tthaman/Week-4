@@ -27,8 +27,8 @@ module.exports.getByEmail = async (email) => {
   return user;
 }
 
-module.exports.deleteByEmail = async (email) => {
-  return await User.delete({ email: email });
+module.exports.deleteByUserId = async (userId) => {
+  return await User.delete({ _id: mongoose.Types.ObjectId(userId) });
 }
 
 module.exports.create = async (userData) => {

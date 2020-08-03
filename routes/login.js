@@ -75,16 +75,15 @@ router.post("/", async (req, res, next) => {
 
 // Logout
 router.post("/logout", async (req, res, next) => {
-  const {email, password } = req.body;
-  if (!email ) {
-    res.status(401).send('user/password is required');
-  } else {
-    try {
-      const savedUser = await userDAO.find(email);
-      res.json(savedUser);
-    } catch(e) {
-      res.status(500).send(e.message);
-    }
+  if (await isLoggedIn(req)) {
+      try {
+        const deletedToken = await tokenDAO.removeToken(req.token)
+        res.json(deletedToken);
+      } catch (e) {
+        res.status(500).send(e.message);
+      }
+    } else {
+    res.status(401).send('unauthorized');
   }
 });
 
@@ -97,6 +96,7 @@ async function isLoggedIn(req) {
     if (aToken && aToken !== "undefined") {
       const token = await tokenDAO.getUserIdFromToken(aToken) ;
       if (token) {
+        req.token = aToken;
         req.userId = token.userId;
         isLoggedIn = true;
       }
