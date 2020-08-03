@@ -33,11 +33,11 @@ router.post("/password", async (req, res, next) => {
       res.status(400).send('password is required');
     } else {
       try {
-        const savedUser = await userDAO.getByUserId(req.userId);
-        if (savedUser) {
+        // const savedUser = await userDAO.getById(req.userId);
+        // if (savedUser) {
           const updatedUser = await userDAO.updateUserPassword(req.userId, password)
           res.json(updatedUser);
-        }
+        // }
       } catch (e) {
         res.status(500).send(e.message);
       }
