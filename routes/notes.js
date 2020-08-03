@@ -7,14 +7,14 @@ const noteDAO = require('../daos/note');
 //GET / - If the user is logged in, it should get all notes for their userId
 //GET /:id - If the user is logged in, it should get the note with the provided id and that has their userId
 
-router.use(async (req, res, next) => {
-  const { noteId } = req.params;
-  const note = await noteDAO.getById(noteId);
-  if (!note) {
-  res.status(404).send("note not found");
-  } else {
-    req.note = note;    next();
-  }});
+// router.use(async (req, res, next) => {
+//   const { noteId } = req.params;
+//   const note = await noteDAO.getById(noteId);
+//   if (!note) {
+//   res.status(404).send("note not found");
+//   } else {
+//     req.note = note;    next();
+//   }});
 
 // Create
 router.post("/", async (req, res, next) => {
@@ -23,6 +23,7 @@ router.post("/", async (req, res, next) => {
     res.status(400).send('note is required');
   } else {
     try {
+      note.userId = req.userId;
       const savednote = await noteDAO.create(note);
       res.json(savednote);
     } catch(e) {
@@ -31,20 +32,27 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-// Read - all notes
-router.get("/", async (req, res, next) => {
-  let { page, perPage, query } = req.query;
-  page = page ? Number(page) : 0;
-  perPage = perPage ? Number(perPage) : 10;
-  const notes = await noteDAO.getAll(page, perPage);
-  res.json(notes);
-});
-
 // Read - single note
 router.get("/:id", async (req, res, next) => {
-  const note = await noteDAO.getById(req.params.id);
-  if (note) {
-    res.json(note);
+  const id = req.params.id;
+  let note;
+  try {
+    note = await noteDAO.getById(id, req.userId);
+    if (note) {
+      res.json(note);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (e) {
+    res.sendStatus(400);
+  }
+});
+
+// Read - all notes
+router.get("/", async (req, res, next) => {
+  const notes = await noteDAO.getAllByUserId(req.userId);
+  if (notes && notes.length > 0) {
+    res.json(notes);
   } else {
     res.sendStatus(404);
   }

@@ -3,24 +3,30 @@ const router = Router();
 const tokenDAO = require('../daos/token');
 
 router.use("/notes", async (req, res, next) => {
-  if(isLoggedIn(req, res, next)) {
+  if(await isLoggedIn(req)) {
     next();
   } else {
     res.status(401).send('unauthorized');
   }
 });
 
-// router.use("/login", async (req, res, next) => {
-//     next();
-// });
-//
-// router.use("/login/password", async (req, res, next) => {
-//   if(isLoggedIn(req)) {
-//     next();
-//   } else {
-//     res.status(401).send('unauthorized');
-//   }
-// });
+async function isLoggedIn(req) {
+  let isLoggedIn = false;
+  const {authorization} = req.headers;
+  if (authorization) {
+    const aToken = authorization.toString().split('Bearer ')[1]
+    if (aToken && aToken !== "undefined") {
+      const token = await tokenDAO.getUserIdFromToken(aToken) ;
+      if (token) {
+        req.token = aToken;
+        req.userId = token.userId;
+        isLoggedIn = true;
+      }
+    }
+  }
+  return isLoggedIn;
+}
+
 
 
 //isLoggedIn(req, res, next) - should check if the user has a valid token and if so make
