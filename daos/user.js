@@ -19,7 +19,7 @@ module.exports.updateUserPassword = async (userId, password) =>  {
 };
 
 module.exports.getById = async (userId) => {
-  return await User.findOne({ _id: mongoose.Types.ObjectId(userId) }).lean();
+  return await User.findOne({ _id: userId }).lean();
 }
 
 module.exports.getByEmail = async (email) => {
